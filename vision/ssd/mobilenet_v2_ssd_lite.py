@@ -12,6 +12,7 @@ def SeperableConv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=
     """Replace Conv2d with a depthwise Conv2d and Pointwise Conv2d.
     """
     ReLU = nn.ReLU if onnx_compatible else nn.ReLU6
+    print("Relu used: ", ReLU, onnx_compatible)
     return Sequential(
         Conv2d(in_channels=in_channels, out_channels=in_channels, kernel_size=kernel_size,
                groups=in_channels, stride=stride, padding=padding),
@@ -38,20 +39,20 @@ def create_mobilenetv2_ssd_lite(num_classes, width_mult=1.0, use_batch_norm=True
 
     regression_headers = ModuleList([
         SeperableConv2d(in_channels=round(576 * width_mult), out_channels=6 * 4,
-                        kernel_size=3, padding=1, onnx_compatible=False),
-        SeperableConv2d(in_channels=1280, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=False),
-        SeperableConv2d(in_channels=512, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=False),
-        SeperableConv2d(in_channels=256, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=False),
-        SeperableConv2d(in_channels=256, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=False),
+                        kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=1280, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=512, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=256, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=256, out_channels=6 * 4, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
         Conv2d(in_channels=64, out_channels=6 * 4, kernel_size=1),
     ])
 
     classification_headers = ModuleList([
-        SeperableConv2d(in_channels=round(576 * width_mult), out_channels=6 * num_classes, kernel_size=3, padding=1),
-        SeperableConv2d(in_channels=1280, out_channels=6 * num_classes, kernel_size=3, padding=1),
-        SeperableConv2d(in_channels=512, out_channels=6 * num_classes, kernel_size=3, padding=1),
-        SeperableConv2d(in_channels=256, out_channels=6 * num_classes, kernel_size=3, padding=1),
-        SeperableConv2d(in_channels=256, out_channels=6 * num_classes, kernel_size=3, padding=1),
+        SeperableConv2d(in_channels=round(576 * width_mult), out_channels=6 * num_classes, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=1280, out_channels=6 * num_classes, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=512, out_channels=6 * num_classes, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=256, out_channels=6 * num_classes, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
+        SeperableConv2d(in_channels=256, out_channels=6 * num_classes, kernel_size=3, padding=1, onnx_compatible=onnx_compatible),
         Conv2d(in_channels=64, out_channels=6 * num_classes, kernel_size=1),
     ])
 

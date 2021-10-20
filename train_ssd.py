@@ -93,6 +93,8 @@ parser.add_argument('--use-cuda', default=True, type=str2bool,
                     help='Use CUDA to train model')
 parser.add_argument('--checkpoint-folder', '--model-dir', default='models/',
                     help='Directory for saving checkpoint models')
+parser.add_argument('--onnx-compatible', default=True, type=str2bool,
+                    help='Use CUDA to train model')
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
@@ -191,7 +193,7 @@ if __name__ == '__main__':
         create_net = create_squeezenet_ssd_lite
         config = squeezenet_ssd_config
     elif args.net == 'mb2-ssd-lite':
-        create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult)
+        create_net = lambda num: create_mobilenetv2_ssd_lite(num, width_mult=args.mb2_width_mult, onnx_compatible=args.onnx_compatible)
         config = mobilenetv1_ssd_config
     else:
         logging.fatal("The net type is wrong.")
